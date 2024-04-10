@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import logoLight from "../assets/images/logo-light.png";
 // import logoDark from '../assets/images/logo-dark.png';
 import { FaSearch, FaBars } from "react-icons/fa";
 
 const Header = () => {
+  const location = useLocation();
+
   return (
     <header className=' flex bg-light-1 shadow-md'>
       <div className='container flex items-center justify-between mx-auto p-3'>
@@ -13,7 +15,7 @@ const Header = () => {
             <img src={logoLight} alt='Logo' width={150} />
           </Link>
         </div>
-        <form className='flex h-[52px]  items-center w-[150px] sm:w-[200px] md:w-[300px] lg:w-[500px] bg-white border border-gold-1 rounded-lg p-3 text-dark-1 '>
+        <form className='flex h-[52px]  items-center w-[150px] sm:w-[200px] md:w-[300px] bg-white border border-gold-1 rounded-lg p-3 text-dark-1 '>
           <input
             type='text'
             placeholder='Search...'
@@ -21,7 +23,7 @@ const Header = () => {
           />
           <FaSearch className='text-[rgba(71,58,63,0.7)] sm:text-xl cursor-pointer hover:text-gold-2' />
         </form>
-        <nav className='flex items-center justify-center gap-5 text-dark-1'>
+        <nav className='flex items-center justify-center gap-5 pr-3'>
           <ul className='flex gap-5'>
             <li className='hidden sm:inline hover:underline hover:underline-custom '>
               <Link to='/'>Home</Link>
@@ -29,9 +31,16 @@ const Header = () => {
             <li className='hidden sm:inline hover:underline hover:underline-custom'>
               <Link to='/about'>About</Link>
             </li>
-            <li className='hidden sm:inline hover:underline hover:underline-custom'>
-              <Link to='/sign-in'>Sign in</Link>
-            </li>
+
+            {location.pathname === "/sign-in" ? (
+              <li className='hidden sm:inline hover:underline hover:underline-custom'>
+                <Link to='/sign-up'>Sign up</Link>
+              </li>
+            ) : (
+              <li className='hidden sm:inline hover:underline hover:underline-custom'>
+                <Link to='/sign-in'>Sign in</Link>
+              </li>
+            )}
           </ul>
           <FaBars className='text-[rgba(71,58,63,0.7)] sm:hidden cursor-pointer hover:text-gold-2' />
         </nav>

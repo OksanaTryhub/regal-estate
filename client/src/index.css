@@ -16,3 +16,8 @@
     text-underline-offset: 4px;
   }
 }
+
+body {
+  background-color: #fffefa;
+  color: #473a3f;
+}
