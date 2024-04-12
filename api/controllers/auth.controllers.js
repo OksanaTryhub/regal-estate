@@ -7,7 +7,7 @@ import ctrlWrapper from "./../utils/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
 dotenv.config();
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY, JWT_EXPIRES_IN } = process.env;
 
 const signup = async (req, res, next) => {
   const { email, username, password } = req.body;
@@ -32,40 +32,66 @@ const signup = async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
-    const result = await User.create({ ...req.body, password: hashedPassword });
+    const newUser = await User.create({ ...req.body, password: hashedPassword });
 
-    res.status(201).json({
-      username: result.username,
-      email: result.email,
-    });
+    const payload = {
+      id: newUser._id,
+    };
+
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: JWT_EXPIRES_IN });
+
+    res
+      .cookie("access_token", token, { httpOnly: true, maxAge: 23 * 60 * 60 * 1000 })
+      .status(201)
+      .json({
+        token,
+        user: {
+          username: newUser.username,
+          email: newUser.email,
+        },
+      });
   } catch (error) {
-    next();
+    next(error);
     // res.status(500).json({
     //   message: error.message,
     // });
   }
 };
 
-const signin = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw HttpError(401, "Email or password invalid");
+const signin = async (req, res, next) => {
+  const { username, email, password } = req.body;
+  try {
+    const validUser = await User.findOne({ email });
+    if (!validUser) {
+      throw HttpError(401, "Email or password invalid");
+    }
+    const passwordCompare = await bcrypt.compare(password, validUser.password);
+    if (!passwordCompare) {
+      throw HttpError(401, "Email or password invalid");
+    }
+
+    const payload = {
+      id: validUser._id,
+    };
+
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: JWT_EXPIRES_IN });
+    const { password: pass, ...rest } = validUser._doc;
+
+    res
+      .cookie("access_token", token, { httpOnly: true, maxAge: 23 * 60 * 60 * 1000 })
+      .status(200)
+      .json({
+        token,
+        user: rest,
+        // validUser,
+        // user: {
+        //   username: validUser.username,
+        //   email: validUser.email,
+        // },
+      });
+  } catch (error) {
+    next(error);
   }
-  const passwordCompare = await bcrypt.compare(password, user.password);
-  if (!passwordCompare) {
-    throw HttpError(401, "Email or password invalid");
-  }
-
-  const payload = {
-    id: user._id,
-  };
-
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
-
-  res.json({
-    token,
-  });
 };
 
 export const authControllers = {
