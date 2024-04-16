@@ -94,7 +94,57 @@ const signin = async (req, res, next) => {
   }
 };
 
+const google = async (req, res, next) => {
+  const { name, email, photo } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const payload = {
+        id: user._id,
+      };
+      const token = jwt.sign(payload, SECRET_KEY, { expiresIn: JWT_EXPIRES_IN });
+      const { password: pass, ...rest } = user._doc;
+
+      res
+        .cookie("access_token", token, { httpOnly: true, maxAge: 23 * 60 * 60 * 1000 })
+        .status(200)
+        .json({
+          token,
+          user: rest,
+        });
+    } else {
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+
+      const newUser = await User.create({
+        username: name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-4),
+        email,
+        password: hashedPassword,
+        avatar: photo,
+      });
+
+      const payload = {
+        id: newUser._id,
+      };
+      const token = jwt.sign(payload, SECRET_KEY, { expiresIn: JWT_EXPIRES_IN });
+      const { password: pass, ...rest } = user._doc;
+
+      res
+        .cookie("access_token", token, { httpOnly: true, maxAge: 23 * 60 * 60 * 1000 })
+        .status(200)
+        .json({
+          token,
+          user: rest,
+        });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const authControllers = {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
+  google,
 };

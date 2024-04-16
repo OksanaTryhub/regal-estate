@@ -10,4 +10,6 @@ router.post("/signup", validateBody(schemas.userSignUpSchema), authControllers.s
 
 router.post("/signin", validateBody(schemas.userSignInSchema), authControllers.signin);
 
+router.post("/google", authControllers.google);
+
 export default router;
