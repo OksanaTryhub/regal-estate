@@ -3,8 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 import logoLight from "../assets/images/logo-light.png";
 // import logoDark from '../assets/images/logo-dark.png';
 import { FaSearch, FaBars } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+  const { currentUser } = useSelector((state) => state.user);
   const location = useLocation();
 
   return (
@@ -31,14 +33,21 @@ const Header = () => {
             <li className='hidden sm:inline hover:underline hover:underline-custom'>
               <Link to='/about'>About</Link>
             </li>
-
-            {location.pathname === "/sign-in" ? (
-              <li className='hidden sm:inline hover:underline hover:underline-custom'>
-                <Link to='/sign-up'>Sign up</Link>
-              </li>
+            {currentUser && Object.keys(currentUser).length > 0 ? (
+              <Link to='/profile'>
+                <img
+                  className='rounded-full h-7 w-7 object-cover'
+                  src={currentUser.user.avatar}
+                  alt='profile'
+                />
+              </Link>
             ) : (
               <li className='hidden sm:inline hover:underline hover:underline-custom'>
-                <Link to='/sign-in'>Sign in</Link>
+                {location.pathname === "/sign-in" ? (
+                  <Link to='/sign-up'>Sign up</Link>
+                ) : (
+                  <Link to='/sign-in'>Sign in</Link>
+                )}
               </li>
             )}
           </ul>
