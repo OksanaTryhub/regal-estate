@@ -44,11 +44,13 @@ const signup = async (req, res, next) => {
       .cookie("access_token", token, { httpOnly: true, maxAge: 23 * 60 * 60 * 1000 })
       .status(201)
       .json({
-        token,
-        user: {
-          username: newUser.username,
-          email: newUser.email,
-        },
+        // token,
+        // user: {
+        //   username: newUser.username,
+        //   email: newUser.email,
+        // },
+        username: newUser.username,
+        email: newUser.email,
       });
   } catch (error) {
     next(error);
@@ -59,7 +61,7 @@ const signup = async (req, res, next) => {
 };
 
 const signin = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { email, password } = req.body;
   try {
     const validUser = await User.findOne({ email });
     if (!validUser) {
@@ -80,15 +82,13 @@ const signin = async (req, res, next) => {
     res
       .cookie("access_token", token, { httpOnly: true, maxAge: 23 * 60 * 60 * 1000 })
       .status(200)
-      .json({
-        token,
-        user: rest,
-        // validUser,
-        // user: {
-        //   username: validUser.username,
-        //   email: validUser.email,
-        // },
-      });
+      .json(
+        rest
+        // {
+        // token,
+        // user: rest,
+        // }
+      );
   } catch (error) {
     next(error);
   }
@@ -108,10 +108,13 @@ const google = async (req, res, next) => {
       res
         .cookie("access_token", token, { httpOnly: true, maxAge: 23 * 60 * 60 * 1000 })
         .status(200)
-        .json({
-          token,
-          user: rest,
-        });
+        .json(
+          rest
+          // {
+          // token,
+          // user: rest,
+          // }
+        );
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);

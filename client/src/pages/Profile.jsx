@@ -1,15 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
 
+import { updateUserStart, updateUserSuccess, updateUserFailure } from "../redux/user/userSlice";
+import Loader from "../components/Loader";
+
 const Profile = () => {
   const fileRef = useRef(null);
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadErr, setFileUploadErr] = useState(false);
   const [formData, setFormData] = useState({});
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+
+  const dispatch = useDispatch();
 
   // firebase storage
   // allow read;
@@ -48,12 +54,46 @@ const Profile = () => {
     );
   };
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      dispatch(updateUserStart());
+
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFailure(error));
+    }
+  };
+
   return (
     <section>
       <div className='container mx-auto p-3'>
         <div className=' max-w-lg mx-auto p-3'>
           <h1 className='text-3xl text-center font-medium my-7'>Profile</h1>
-          <form className='flex flex-col gap-4 mb-5'>
+          <form onSubmit={handleSubmit} className='flex flex-col gap-4 mb-5'>
             <input
               type='file'
               ref={fileRef}
@@ -62,7 +102,7 @@ const Profile = () => {
               accept='image/*'
             />
             <img
-              src={formData.avatar || currentUser.user.avatar}
+              src={formData.avatar || currentUser.avatar}
               alt='avatar'
               className='rounded-full border shadow-md h-24 w-24 object-cover self-center my-2 cursor-pointer'
               onClick={() => fileRef.current.click()}
@@ -81,33 +121,31 @@ const Profile = () => {
             <input
               name='username'
               type='text'
-              // value={formData.username}
-              // onChange={handleChange}
+              defaultValue={currentUser.username}
+              onChange={handleChange}
               placeholder='User name'
               className=' bg-white focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:text-lg sm:placeholder:text-lg placeholder:text-[rgba(71,58,63,0.5)] border border-gold-1 rounded-lg p-3'
             />
             <input
               name='email'
               type='email'
-              // value={formData.email}
-              // onChange={handleChange}
+              defaultValue={currentUser.email}
+              onChange={handleChange}
               placeholder='Email'
               className=' bg-white focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:text-lg sm:placeholder:text-lg placeholder:text-[rgba(71,58,63,0.5)] border border-gold-1 rounded-lg p-3'
             />
             <input
               name='password'
               type='password'
-              // value={formData.password}
-              // onChange={handleChange}
+              onChange={handleChange}
               placeholder='Password'
               className=' bg-white focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:text-lg sm:placeholder:text-lg placeholder:text-[rgba(71,58,63,0.5)] border border-gold-1 rounded-lg p-3'
             />
             <button
-              // disabled={loading || Object.values(formData).some((value) => !value)}
+              disabled={loading}
               className='text-white bg-dark-2 rounded-lg p-3 sm:text-lg hover:opacity-95 hover:text-gold-1 disabled:opacity-50 disabled:hover:opacity-50 disabled:hover:text-white'
             >
-              {/* {loading ? <Loader /> : "Update"} */}
-              Update
+              {loading ? <Loader /> : "Update"}
             </button>
             <button
               type='button'
@@ -117,10 +155,15 @@ const Profile = () => {
               Create listing
             </button>
           </form>
+          <p className='text-red-700 font-semibold'>{error ? error : ""}</p>
+          <p className='text-green-700 font-semibold'>
+            {updateSuccess ? "User is updated successfully!" : ""}
+          </p>
           <div className='flex justify-between text-red-500'>
             <span className='cursor-pointer'>Delete account</span>
             <span className='cursor-pointer'>Sign out</span>
           </div>
+
           <div className='flex mt-4'>
             <span className='mx-auto cursor-pointer'>Show listing</span>
           </div>

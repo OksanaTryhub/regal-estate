@@ -1,4 +1,10 @@
-export const test = async (req, res) => {
+import bcrypt from "bcryptjs";
+
+import HttpError from "../helpers/HttpError.js";
+import ctrlWrapper from "./../utils/ctrlWrapper.js";
+import { User } from "../models/user.model.js";
+
+const test = async (req, res) => {
   try {
     res.send("Hello test");
   } catch (error) {
@@ -6,4 +12,53 @@ export const test = async (req, res) => {
       message: error.message,
     });
   }
+};
+
+const updateUser = async (req, res, next) => {
+  const { email, username, password } = req.body;
+  const userId = req.params.id;
+
+  if (req.user.id !== userId) {
+    return next(HttpError(403, "Forbidden! You can only update your own account!"));
+  }
+
+  const userNameExists = await User.findOne({ username });
+  if (userNameExists) {
+    throw HttpError(409, "Username already in use");
+  }
+
+  const userEmailExists = await User.findOne({ email });
+  if (userEmailExists) {
+    throw HttpError(409, "Email already in use");
+  }
+
+  try {
+    if (password) {
+      password = await bcrypt.hash(password, 10);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          password: req.body.password,
+          avatar: req.body.avatar,
+        },
+      },
+      { new: true }
+    );
+
+    const { password: pass, ...rest } = updatedUser._doc;
+
+    res.status(200).json(rest);
+  } catch (error) {
+    next(HttpError());
+  }
+};
+
+export const userControllers = {
+  test: ctrlWrapper(test),
+  updateUser: ctrlWrapper(updateUser),
 };

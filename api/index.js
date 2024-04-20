@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const { DB_HOST } = process.env;
@@ -25,6 +26,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
