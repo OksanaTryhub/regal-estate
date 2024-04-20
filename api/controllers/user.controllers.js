@@ -54,11 +54,33 @@ const updateUser = async (req, res, next) => {
 
     res.status(200).json(rest);
   } catch (error) {
-    next(HttpError());
+    next(error);
+  }
+};
+
+const deleteUser = async (req, res, next) => {
+  const { email, username, password } = req.body;
+  const userId = req.params.id;
+
+  if (req.user.id !== userId) {
+    return next(HttpError(403, "Forbidden! You can only delete your own account!"));
+  }
+
+  try {
+    const { username } = await User.findByIdAndDelete(userId);
+
+    res.clearCookie("access_token");
+    res.status(200).json({
+      username,
+      message: "User has been deleted...",
+    });
+  } catch (error) {
+    next(error);
   }
 };
 
 export const userControllers = {
   test: ctrlWrapper(test),
   updateUser: ctrlWrapper(updateUser),
+  deleteUser: ctrlWrapper(deleteUser),
 };

@@ -3,7 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
 
-import { updateUserStart, updateUserSuccess, updateUserFailure } from "../redux/user/userSlice";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+} from "../redux/user/userSlice";
 import Loader from "../components/Loader";
 
 const Profile = () => {
@@ -84,7 +91,27 @@ const Profile = () => {
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
     } catch (error) {
-      dispatch(updateUserFailure(error));
+      dispatch(updateUserFailure(error.message));
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+
+      const data = res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
     }
   };
 
@@ -160,8 +187,10 @@ const Profile = () => {
             {updateSuccess ? "User is updated successfully!" : ""}
           </p>
           <div className='flex justify-between text-red-500'>
-            <span className='cursor-pointer'>Delete account</span>
-            <span className='cursor-pointer'>Sign out</span>
+            <button onClick={handleDeleteUser} className='cursor-pointer'>
+              Delete account
+            </button>
+            <button className='cursor-pointer'>Sign out</button>
           </div>
 
           <div className='flex mt-4'>
