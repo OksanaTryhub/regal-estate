@@ -12,4 +12,6 @@ router.post("/signin", validateBody(schemas.userSignInSchema), authControllers.s
 
 router.post("/google", authControllers.google);
 
+router.get("/signout", authControllers.signout);
+
 export default router;

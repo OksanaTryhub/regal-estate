@@ -10,6 +10,9 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
+  signOutStart,
+  signOutSuccess,
+  signOutFailure,
 } from "../redux/user/userSlice";
 import Loader from "../components/Loader";
 
@@ -115,6 +118,22 @@ const Profile = () => {
     }
   };
 
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutStart());
+      const res = await fetch("/api/auth/signout");
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signOutFailure(data.message));
+        return;
+      }
+
+      dispatch(signOutSuccess(data));
+    } catch (error) {
+      dispatch(signOutFailure(error.message));
+    }
+  };
+
   return (
     <section>
       <div className='container mx-auto p-3'>
@@ -190,7 +209,9 @@ const Profile = () => {
             <button onClick={handleDeleteUser} className='cursor-pointer'>
               Delete account
             </button>
-            <button className='cursor-pointer'>Sign out</button>
+            <button onClick={handleSignOut} className='cursor-pointer'>
+              Sign out
+            </button>
           </div>
 
           <div className='flex mt-4'>
