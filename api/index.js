@@ -2,10 +2,11 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
-import cookieParser from "cookie-parser";
+import listingRouter from "./routes/listing.routes.js";
 
 dotenv.config();
 const { DB_HOST } = process.env;
@@ -30,6 +31,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/listing", listingRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not Found" });

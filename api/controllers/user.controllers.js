@@ -15,7 +15,7 @@ const test = async (req, res) => {
 };
 
 const updateUser = async (req, res, next) => {
-  const { email, username, password } = req.body;
+  let { email, username, password, avatar } = req.body;
   const userId = req.params.id;
 
   if (req.user.id !== userId) {
@@ -41,10 +41,10 @@ const updateUser = async (req, res, next) => {
       userId,
       {
         $set: {
-          username: req.body.username,
-          email: req.body.email,
-          password: req.body.password,
-          avatar: req.body.avatar,
+          username,
+          email,
+          password,
+          avatar,
         },
       },
       { new: true }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
 
@@ -198,7 +199,7 @@ const Profile = () => {
               // onClick={handleClick}
               className='text-white bg-dark-1 rounded-lg p-3 sm:text-lg hover:opacity-95 hover:text-gold-1 disabled:opacity-80'
             >
-              Create listing
+              <Link to={"/create-listing"}>Create listing</Link>
             </button>
           </form>
           <p className='text-red-700 font-semibold'>{error ? error : ""}</p>
