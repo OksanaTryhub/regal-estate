@@ -196,7 +196,6 @@ const Profile = () => {
             </button>
             <button
               type='button'
-              // onClick={handleClick}
               className='text-white bg-dark-1 rounded-lg p-3 sm:text-lg hover:opacity-95 hover:text-gold-1 disabled:opacity-80'
             >
               <Link to={"/create-listing"}>Create listing</Link>

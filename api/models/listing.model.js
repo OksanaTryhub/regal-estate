@@ -50,7 +50,7 @@ const listingSchema = new Schema(
     },
     imageUrls: {
       type: Array,
-      //   required: [true, "Upload housing images"],
+      required: [true, "Upload housing images"],
     },
     userRef: {
       type: String,
@@ -74,8 +74,7 @@ const listingCreateSchema = Joi.object({
   parking: Joi.boolean().required(),
   type: Joi.string().required(),
   offer: Joi.boolean().required(),
-  //   imageUrls: Joi.array().required(),
-  imageUrls: Joi.array(),
+  imageUrls: Joi.array().required(),
   userRef: Joi.string().required(),
 });
 

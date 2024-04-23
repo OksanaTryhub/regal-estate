@@ -5,8 +5,8 @@ const Loader = () => {
     <div className='flex items-center justify-center'>
       <RotatingLines
         visible={true}
-        height='28'
-        width='28'
+        height='24'
+        width='24'
         strokeColor='#EABD4D'
         strokeWidth='3'
         animationDuration='0.75'
