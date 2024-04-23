@@ -43,7 +43,7 @@ const SignUp = () => {
           username: "",
         });
         setError(null);
-        navigate("/");
+        navigate("/sign-in");
         //Add Modal Success Registration
       }
     } catch (error) {

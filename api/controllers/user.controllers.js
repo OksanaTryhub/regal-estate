@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "./../utils/ctrlWrapper.js";
 import { User } from "../models/user.model.js";
+import { Listing } from "../models/listing.model.js";
 
 const test = async (req, res) => {
   try {
@@ -19,7 +20,7 @@ const updateUser = async (req, res, next) => {
   const userId = req.params.id;
 
   if (req.user.id !== userId) {
-    return next(HttpError(403, "Forbidden! You can only update your own account!"));
+    return next(HttpError(401, "You can only update your own account!"));
   }
 
   const userNameExists = await User.findOne({ username });
@@ -59,11 +60,10 @@ const updateUser = async (req, res, next) => {
 };
 
 const deleteUser = async (req, res, next) => {
-  const { email, username, password } = req.body;
   const userId = req.params.id;
 
   if (req.user.id !== userId) {
-    return next(HttpError(403, "Forbidden! You can only delete your own account!"));
+    return next(HttpError(401, "You can only delete your own account!"));
   }
 
   try {
@@ -79,8 +79,24 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+const getUserListings = async (req, res, next) => {
+  const userId = req.params.id;
+
+  if (req.user.id === userId) {
+    try {
+      const listings = await Listing.find({ userRef: userId });
+      res.status(200).json(listings);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(HttpError(401, "You can only view your own listings!"));
+  }
+};
+
 export const userControllers = {
   test: ctrlWrapper(test),
   updateUser: ctrlWrapper(updateUser),
   deleteUser: ctrlWrapper(deleteUser),
+  getUserListings: ctrlWrapper(getUserListings),
 };

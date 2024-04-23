@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
+import { LuRefreshCw } from "react-icons/lu";
 
 import {
   updateUserStart,
@@ -16,15 +17,22 @@ import {
   signOutFailure,
 } from "../redux/user/userSlice";
 import Loader from "../components/Loader";
+import Listings from "../components/Listings";
+// import HttpError from "../../../api/helpers/HttpError";
 
 const Profile = () => {
   const fileRef = useRef(null);
+
   const { currentUser, error, loading } = useSelector((state) => state.user);
+
   const [file, setFile] = useState(undefined);
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadErr, setFileUploadErr] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
+  const [isListingsShown, setIsListingsShown] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -135,6 +143,45 @@ const Profile = () => {
     }
   };
 
+  const handleShowListings = async () => {
+    try {
+      setShowListingsError(false);
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+
+      if (data.success === false) {
+        setShowListingsError(data.message);
+        return;
+      }
+
+      setUserListings(data);
+      setIsListingsShown(true);
+    } catch (error) {
+      setShowListingsError(error.message);
+    }
+  };
+
+  const handleListingDelete = async (listingId) => {
+    console.log("Delete listing with ID:", listingId);
+
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: "DELETE",
+      });
+      const data = res.json();
+
+      if (data.success === false) {
+        // HttpError(data.status, data.message);
+        console.log(data.message);
+        return;
+      }
+      setUserListings((prev) => prev.filter((listing) => listing._id !== listingId));
+    } catch (error) {
+      // HttpError(error);
+      console.log(error.message);
+    }
+  };
+
   return (
     <section>
       <div className='container mx-auto p-3'>
@@ -213,10 +260,25 @@ const Profile = () => {
               Sign out
             </button>
           </div>
+          {isListingsShown ? (
+            <div className='flex my-4 px-4'>
+              <div className='flex flex-1 items-center justify-center'>
+                <p className='font-medium text-xl '>My listings</p>
+              </div>
+              <button onClick={handleShowListings}>
+                <LuRefreshCw className='text-[rgba(71,58,63,0.7)]  hover:text-gold-2 hover:rotate-180 transition-transform duration-300 ease-in-out' />
+              </button>
+            </div>
+          ) : (
+            <button onClick={handleShowListings} className='flex font-medium text-xl my-4 mx-auto'>
+              Show listing
+            </button>
+          )}
 
-          <div className='flex mt-4'>
-            <span className='mx-auto cursor-pointer'>Show listing</span>
-          </div>
+          {showListingsError && <p className='text-red-500'>{showListingsError}</p>}
+          {userListings && userListings.length > 0 && (
+            <Listings items={userListings} handleItemDelete={handleListingDelete} />
+          )}
         </div>
       </div>
     </section>
