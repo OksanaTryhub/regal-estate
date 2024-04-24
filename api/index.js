@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
@@ -23,6 +24,8 @@ mongoose
     process.exit(1);
   });
 
+const __dirname = path.resolve();
+
 const app = express();
 
 app.use(cors());
@@ -32,6 +35,13 @@ app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/listing", listingRouter);
+
+//if use Create-react-app - '/client/build'
+app.use(express.static(path.join(__dirname, "/client/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not Found" });
