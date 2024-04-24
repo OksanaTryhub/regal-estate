@@ -1,13 +1,24 @@
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 
 import logoLight from "../assets/images/logo-light.png";
 // import logoDark from '../assets/images/logo-dark.png';
 import { FaSearch, FaBars } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import BurgerMenu from "./BurgerMenu";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const [showBurger, setShowBurger] = useState(false);
   const location = useLocation();
+
+  const handleShowBurger = () => {
+    setShowBurger(true);
+  };
+
+  const handleCloseBurger = () => {
+    setShowBurger(false);
+  };
 
   return (
     <header className=' flex bg-light-1 shadow-md'>
@@ -25,7 +36,7 @@ const Header = () => {
           />
           <FaSearch className='text-[rgba(71,58,63,0.7)] sm:text-xl cursor-pointer hover:text-gold-2' />
         </form>
-        <nav className='flex items-center justify-center gap-5 pr-3'>
+        <nav className='hidden sm:flex items-center justify-center gap-5 pr-3'>
           <ul className='flex gap-5'>
             <li className='hidden sm:inline hover:underline hover:underline-custom '>
               <Link to='/'>Home</Link>
@@ -51,9 +62,15 @@ const Header = () => {
               </li>
             )}
           </ul>
-          <FaBars className='text-[rgba(71,58,63,0.7)] sm:hidden cursor-pointer hover:text-gold-2' />
         </nav>
+        <div className='flex sm:hidden items-center justify-center gap-5 pr-3'>
+          <FaBars
+            onClick={handleShowBurger}
+            className='text-[rgba(71,58,63,0.7)] cursor-pointer hover:text-gold-2'
+          />
+        </div>
       </div>
+      <BurgerMenu onClose={handleCloseBurger} isOpen={showBurger} />
     </header>
   );
 };
