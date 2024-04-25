@@ -1,12 +1,16 @@
+import PropTypes from "prop-types";
 import { RotatingLines } from "react-loader-spinner";
 
-const Loader = () => {
+const Loader = ({ size }) => {
+  const defaultSize = 24; // Размер по умолчанию
+  const actualSize = size || defaultSize; // Используйте размер реквизита или размер по умолчанию
+
   return (
     <div className='flex items-center justify-center'>
       <RotatingLines
         visible={true}
-        height='24'
-        width='24'
+        height={actualSize}
+        width={actualSize}
         strokeColor='#EABD4D'
         strokeWidth='3'
         animationDuration='0.75'
@@ -16,6 +20,10 @@ const Loader = () => {
       />
     </div>
   );
+};
+
+Loader.propTypes = {
+  size: PropTypes.number,
 };
 
 export default Loader;
