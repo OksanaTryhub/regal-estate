@@ -15,6 +15,18 @@ const test = async (req, res) => {
   }
 };
 
+const getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return next(HttpError(404, "User not found! Try again..."));
+    const { password: pass, ...rest } = user._doc;
+
+    res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateUser = async (req, res, next) => {
   let { email, username, password, avatar } = req.body;
   const userId = req.params.id;
@@ -96,6 +108,7 @@ const getUserListings = async (req, res, next) => {
 
 export const userControllers = {
   test: ctrlWrapper(test),
+  getUser: ctrlWrapper(getUser),
   updateUser: ctrlWrapper(updateUser),
   deleteUser: ctrlWrapper(deleteUser),
   getUserListings: ctrlWrapper(getUserListings),

@@ -167,7 +167,7 @@ const UpdateListing = () => {
   };
 
   return (
-    <main className='max-w-4xl mx-auto'>
+    <section className='max-w-4xl mx-auto'>
       <div className='container mx-auto p-3'>
         <div className=' mx-auto p-3'>
           <h1 className='text-3xl text-center font-medium my-7'>Update a listing</h1>
@@ -429,7 +429,7 @@ const UpdateListing = () => {
           </form>
         </div>
       </div>
-    </main>
+    </section>
   );
 };
 
