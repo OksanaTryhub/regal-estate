@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import logoLight from "../assets/images/logo-light.png";
 // import logoDark from '../assets/images/logo-dark.png';
@@ -10,7 +10,9 @@ import BurgerMenu from "./BurgerMenu";
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [showBurger, setShowBurger] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleShowBurger = () => {
     setShowBurger(true);
@@ -20,6 +22,27 @@ const Header = () => {
     setShowBurger(false);
   };
 
+  const handleChangeSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("searchTerm", searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm", searchTerm);
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search, searchTerm]);
+
   return (
     <header className=' flex bg-light-1 shadow-md'>
       <div className='container flex items-center justify-between mx-auto p-3'>
@@ -28,14 +51,26 @@ const Header = () => {
             <img src={logoLight} alt='Logo' width={150} />
           </Link>
         </div>
-        <form className='flex h-[52px]  items-center w-[150px] sm:w-[200px] md:w-[300px] bg-white border border-gold-1 rounded-lg p-3 text-dark-1 '>
-          <input
-            type='text'
-            placeholder='Search...'
-            className=' bg-transparent focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 w-full sm:text-lg sm:placeholder:text-lg placeholder:text-[rgba(71,58,63,0.5)]'
-          />
-          <FaSearch className='text-[rgba(71,58,63,0.7)] sm:text-xl cursor-pointer hover:text-gold-2' />
-        </form>
+        {location.pathname === "/search" ? (
+          ""
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className='flex h-[52px]  items-center w-[150px] sm:w-[200px] md:w-[300px] bg-white border border-gold-1 rounded-lg p-3 text-dark-1 '
+          >
+            <input
+              type='text'
+              placeholder='Search...'
+              value={searchTerm}
+              onChange={handleChangeSearch}
+              className=' bg-transparent focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 w-full sm:text-lg sm:placeholder:text-lg placeholder:text-[rgba(71,58,63,0.5)]'
+            />
+            <button>
+              <FaSearch className='text-[rgba(71,58,63,0.7)] sm:text-xl cursor-pointer hover:text-gold-2' />
+            </button>
+          </form>
+        )}
+
         <nav className='hidden sm:flex items-center justify-center gap-5 pr-3'>
           <ul className='flex gap-5'>
             <li className='hidden sm:inline hover:underline hover:underline-custom '>

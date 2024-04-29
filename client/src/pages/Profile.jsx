@@ -165,7 +165,7 @@ const Profile = () => {
     console.log("Delete listing with ID:", listingId);
 
     try {
-      const res = await fetch(`/api/listing/delete/${listingId}`, {
+      const res = await fetch(`/api/listings/delete/${listingId}`, {
         method: "DELETE",
       });
       const data = res.json();

@@ -30,7 +30,7 @@ const Listing = () => {
       try {
         setLoading(true);
         setError(false);
-        const res = await fetch(`/api/listing/${listingId}`);
+        const res = await fetch(`/api/listings/${listingId}`);
 
         const data = await res.json();
         if (data.success === false) {

@@ -5,9 +5,11 @@ import verifyToken from "../utils/verifyToken.js";
 
 const router = express.Router();
 
+router.get("/", listingControllers.getAllListings);
+
 router.post("/create", verifyToken, listingControllers.createListing);
 
-router.get("/:id", listingControllers.getListing);
+router.get("/:id", listingControllers.getListingById);
 
 router.delete("/delete/:id", verifyToken, listingControllers.deleteListing);
 

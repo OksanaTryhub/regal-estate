@@ -36,7 +36,7 @@ const UpdateListing = () => {
   useEffect(() => {
     const fetchListing = async () => {
       const listingId = params.id;
-      const res = await fetch(`/api/listing/${listingId}`);
+      const res = await fetch(`/api/listings/${listingId}`);
 
       const data = await res.json();
       if (data.success === false) {
@@ -144,7 +144,7 @@ const UpdateListing = () => {
       setLoading(true);
       setLoading(false);
 
-      const res = await fetch(`/api/listing/update/${params.id}`, {
+      const res = await fetch(`/api/listings/update/${params.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
