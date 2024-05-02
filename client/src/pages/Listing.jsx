@@ -125,7 +125,7 @@ const Listing = () => {
           )}
           {error && !loading && (
             <div className='flex justify-center mt-20 gap-4'>
-              <p>Something went wrong! Try again </p>
+              <p>Oops... Something went wrong! Try again </p>
               <LoaderDots />
             </div>
           )}
