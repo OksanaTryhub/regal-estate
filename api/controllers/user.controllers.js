@@ -15,6 +15,15 @@ const test = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find().select("-password");
+    return res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
@@ -109,6 +118,7 @@ const getUserListings = async (req, res, next) => {
 export const userControllers = {
   test: ctrlWrapper(test),
   getUser: ctrlWrapper(getUser),
+  getAllUsers: ctrlWrapper(getAllUsers),
   updateUser: ctrlWrapper(updateUser),
   deleteUser: ctrlWrapper(deleteUser),
   getUserListings: ctrlWrapper(getUserListings),

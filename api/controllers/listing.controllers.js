@@ -2,9 +2,10 @@ import HttpError from "../helpers/HttpError.js";
 import { Listing } from "../models/listing.model.js";
 import ctrlWrapper from "./../utils/ctrlWrapper.js";
 
-const getAllListings = async (req, res, next) => {
+const getListings = async (req, res, next) => {
   try {
-    const limit = parseInt(req.query.limit) || 9;
+    // const limit = parseInt(req.query.limit) || 9;
+    const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
     const startIndex = parseInt(req.query.startIndex || 0);
     let offer = req.query.offer;
     if (offer === undefined || offer === "false") {
@@ -108,7 +109,7 @@ const getListingById = async (req, res, next) => {
 };
 
 export const listingControllers = {
-  getAllListings: ctrlWrapper(getAllListings),
+  getListings: ctrlWrapper(getListings),
   createListing: ctrlWrapper(createListing),
   deleteListing: ctrlWrapper(deleteListing),
   updateListing: ctrlWrapper(updateListing),

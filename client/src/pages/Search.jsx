@@ -58,7 +58,7 @@ const Search = () => {
       setShowMore(false);
       try {
         const searchQuery = urlParams.toString();
-        const res = await fetch(`/api/listings?${searchQuery}`);
+        const res = await fetch(`/api/listings?${searchQuery}&limit=9`);
         const data = await res.json();
 
         if (data.length > 8) {
@@ -128,24 +128,14 @@ const Search = () => {
     navigate(`/search?${searchQuery}`);
   };
 
-  // function generateGoogleMapsUrl(listing) {
-  //   if (!listing || !listing.address) {
-  //     return;
-  //   }
-
-  //   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  //     listing.address
-  //   )}`;
-  //   return googleMapsUrl;
-  // }
-
   const onShowMoreClick = async () => {
     const numberOfListings = searchResults.length;
     const startIndex = numberOfListings;
     const urlParams = new URLSearchParams(location.search);
     urlParams.set("startIndex", startIndex);
     const searchQuery = urlParams.toString();
-    const res = await fetch(`/api/listings?${searchQuery}`);
+
+    const res = await fetch(`/api/listings?${searchQuery}&limit=9`);
     const data = await res.json();
 
     if (data.length < 9) {

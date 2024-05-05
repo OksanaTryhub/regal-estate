@@ -5,7 +5,7 @@ import verifyToken from "../utils/verifyToken.js";
 
 const router = express.Router();
 
-router.get("/", listingControllers.getAllListings);
+router.get("/", listingControllers.getListings);
 
 router.post("/create", verifyToken, listingControllers.createListing);
 

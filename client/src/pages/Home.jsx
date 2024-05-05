@@ -2,17 +2,18 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
-import { Navigation } from "swiper/modules";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
+
+import ListingCard from "../components/ListingCard";
 
 import "swiper/css/bundle";
-import ListingCard from "../components/ListingCard";
 
 const Home = () => {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
 
-  SwiperCore.use([Navigation]);
+  SwiperCore.use([Autoplay, Navigation, Pagination]);
 
   useEffect(() => {
     const fetchOfferListings = async () => {
@@ -59,11 +60,10 @@ const Home = () => {
         </h1>
         <div className='text-xs sm:text-sm lg:text-base'>
           <p>
-            Welcome to <span className='font-semibold'>Regal Estate</span>!
+            Welcome to the <span className='font-semibold'>Regal Estate</span> platform!
           </p>
           <p>
-            We are here to simplify your search for the ideal home by offering the best rental and
-            purchase options.
+            We make finding your ideal home easy by offering the best rental and purchase options.
           </p>
         </div>
         <Link
@@ -75,7 +75,22 @@ const Home = () => {
       </div>
 
       {offerListings && offerListings.length > 0 && (
-        <Swiper navigation>
+        <Swiper
+          navigation
+          loop
+          lazy='true'
+          pagination={{
+            clickable: true,
+          }}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          style={{
+            "--swiper-navigation-color": "#EABD4D ",
+            "--swiper-pagination-color": "#EABD4D",
+          }}
+        >
           {offerListings.map((listing) => (
             <SwiperSlide key={listing._id}>
               <div
