@@ -283,7 +283,15 @@ const Search = () => {
           </form>
         </div>
         <div className='w-full p-3'>
-          <h1 className='text-2xl text-center font-medium mb-7 '>Listing search results:</h1>
+          <div className='flex w-full justify-between px-10 mb-7 '>
+            <h1 className='text-2xl font-medium '>Listing search results:</h1>
+            <button
+              onClick={() => navigate("/map")}
+              className=' flex justify-center items-center p-4 font-semibold hover:text-white bg-white hover:bg-gold-1 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border border-gold-1 rounded-lg'
+            >
+              Show on map
+            </button>
+          </div>
           {loading && !error && (
             <div className='flex w-full justify-center items-center mt-[200px]'>
               <Loader size={40} />

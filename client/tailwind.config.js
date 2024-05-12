@@ -6,6 +6,7 @@ export default {
       colors: {
         light: {
           1: "#FFFCF5",
+          2: "#fffefa",
         },
         dark: {
           1: "#473A3F",
@@ -19,6 +20,9 @@ export default {
       },
       fontFamily: {
         sans: ["Montserrat", "sans-serif"],
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
       },
     },
   },

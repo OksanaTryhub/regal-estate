@@ -11,6 +11,7 @@ import CreateListing from "./pages/CreateListing";
 import UpdateListing from "./pages/UpdateListing";
 import Listing from "./pages/Listing";
 import Search from "./pages/Search";
+import MapPage from "./pages/MapPage";
 
 const App = () => {
   return (
@@ -21,6 +22,8 @@ const App = () => {
         <Route path='/about' element={<About />} />
         <Route path='/listing/:id' element={<Listing />} />
         <Route path='/search' element={<Search />} />
+        <Route path='/map' element={<MapPage />} />
+        <Route path='/*' element={<p className='text-center mt-20 font-bold'>Page Not Found</p>} />
 
         <Route element={<PublicRoute />}>
           <Route path='/sign-in' element={<SignIn />} />

@@ -2,10 +2,16 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
+import BurgerMenu from "./BurgerMenu";
+
 import logoLight from "../assets/images/logo-light.png";
 // import logoDark from '../assets/images/logo-dark.png';
-import { FaSearch, FaBars } from "react-icons/fa";
-import BurgerMenu from "./BurgerMenu";
+import {
+  FaSearch,
+  FaBars,
+  // FaMoon
+} from "react-icons/fa";
+// import { IoSunny } from "react-icons/io5";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -98,6 +104,14 @@ const Header = () => {
             )}
           </ul>
         </nav>
+        {/* <button className='flex w-[70px] items-center gap-1 p-1 border rounded-full bg-red-200 dark:bg-blue-300'>
+          <div className='flex items-center justify-center p-1 border rounded-full'>
+            <IoSunny className='text-[rgba(71,58,63,0.7)] cursor-pointer hover:text-gold-2 ' />
+          </div>
+          <div className='flex items-center justify-center p-1  border rounded-full'>
+            <FaMoon className='text-[rgba(71,58,63,0.7)] cursor-pointer hover:text-gold-2' />
+          </div>
+        </button> */}
         <div className='flex sm:hidden items-center justify-center gap-5 pr-3'>
           <FaBars
             onClick={handleShowBurger}
