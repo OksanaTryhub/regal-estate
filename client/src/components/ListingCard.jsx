@@ -7,20 +7,21 @@ const ListingCard = ({ listing }) => {
   return (
     <Link
       to={`/listing/${listing._id}`}
-      className='flex flex-col gap-4 w-full sm:w-[330px] bg-white rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out overflow-hidden '
+      className="flex flex-col gap-4 w-full bg-white rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out overflow-hidden "
     >
-      <div className='relative overflow-hidden'>
+      <div className="relative overflow-hidden">
         <img
           src={
-            listing.imageUrls && listing.imageUrls[0].startsWith("https://firebasestorage")
+            listing.imageUrls &&
+            listing.imageUrls[0].startsWith("https://firebasestorage")
               ? listing.imageUrls[0]
               : logoLight
           }
-          alt='Listing cover'
-          className='h-[320px] sm:h-[220px] object-cover w-full hover:scale-110 transition-scale duration-500 ease-in-out'
+          alt="Listing cover"
+          className="h-[320px] sm:h-[220px] object-cover w-full hover:scale-110 transition-scale duration-500 ease-in-out"
         />
-        <div className='absolute  bottom-0 left-0 w-full bg-[rgba(107,60,78,0.5)] text-right p-3'>
-          <p className='font-semibold text-gold-1'>
+        <div className="absolute  bottom-0 left-0 w-full bg-[rgba(107,60,78,0.5)] text-right p-3">
+          <p className="font-semibold text-gold-1">
             {listing.discountPrice && listing.discountPrice > 0
               ? listing.discountPrice.toLocaleString("ru-RU")
               : listing.regularPrice.toLocaleString("ru-RU")}{" "}
@@ -29,17 +30,17 @@ const ListingCard = ({ listing }) => {
         </div>
       </div>
 
-      <div className='flex flex-col gap-2 w-full p-3'>
-        <h1 className='text-lg font-semibold truncate'>{listing.name}</h1>
-        <div className='flex gap-2 h-[40px]'>
-          <FaMapMarkerAlt className='w-4 h-4 text-gold-1' />
-          <p className='text-xs line-clamp-2'>{listing.address}</p>
+      <div className="flex flex-col gap-2 w-full p-3">
+        <h1 className="text-lg font-semibold truncate">{listing.name}</h1>
+        <div className="flex gap-2 h-[40px]">
+          <FaMapMarkerAlt className="w-4 h-4 text-gold-1" />
+          <p className="text-xs line-clamp-2">{listing.address}</p>
         </div>
-        <div className=' h-[40px]'>
-          <p className='text-xs line-clamp-2'>{listing.description}</p>
+        <div className=" h-[40px]">
+          <p className="text-xs line-clamp-2">{listing.description}</p>
         </div>
 
-        <div className='flex flex-col  mt-2 gap-2'>
+        <div className="flex flex-col  mt-2 gap-2">
           {/* <p className='font-semibold text-gold-1'>
             ${" "}
             {listing.discountPrice && listing.discountPrice > 0
@@ -47,11 +48,11 @@ const ListingCard = ({ listing }) => {
               : listing.regularPrice.toLocaleString("en-US")}{" "}
             {listing.type === "rent" ? "/ month" : ""}
           </p> */}
-          <div className='flex text-xs font-semibold gap-4'>
-            <p className='grow border-r-2 text-center'>
+          <div className="flex text-xs font-semibold gap-4">
+            <p className="grow border-r-2 text-center">
               {listing.bedrooms} {listing.bedrooms > 1 ? "Beds" : "Bed"}
             </p>
-            <p className='grow text-center'>
+            <p className="grow text-center">
               {listing.bathrooms} {listing.bathrooms > 1 ? "Baths" : "Bath"}
             </p>
           </div>

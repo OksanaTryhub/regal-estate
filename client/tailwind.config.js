@@ -24,6 +24,9 @@ export default {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
       },
+      gridTemplateColumns: {
+        custom: "repeat(auto-fill, minmax(240px, 1fr))",
+      },
     },
   },
   plugins: [],
